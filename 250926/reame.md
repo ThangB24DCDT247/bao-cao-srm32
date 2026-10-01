@@ -117,7 +117,70 @@ int main(void)
     }
 }
 ```
-1
+### Bài tập về nhà:
+
+- đề bài : cấu hình nút bấm điều khiển led
+  - cấu hình gpio:
+    - led pc13 : nhưu trình bày ở trên
+    - nút nhấn pa0:
+      - thuộc bus apb2 : thuộc bit số 2 của apb2
+      - cấu hình trên crl 4 bít đầu tiên
+      - cấu hình input : 4 biết 1000
+
+```c
+#include<stm32f10x.h>
+void delay_ms(uint32_t ms)
+{
+    for(uint32_t i = 0; i < ms; i++)
+    {
+        for(volatile uint32_t j = 0; j < 7200; j++)
+        {
+        }
+    }
+}
+uint8_t Button_Read(void)
+
+{
+
+    return (GPIOA->IDR >> 0) & 0x01;
+
+}
+int main(void)
+{
+
+    RCC->APB2ENR |= (1 << 4);
+		RCC->APB2ENR |= (1 << 2);
+
+
+    GPIOC->CRH &= ~(0xF << 20);
+    GPIOC->CRH |=  (0x3 << 20);
+
+		GPIOA->CRL &= ~(0xF << 0);
+		GPIOA->CRL |=  (0x8 << 0);
+		GPIOA->ODR |= (1 << 0);
+	uint8_t led_state=0;
+
+
+
+
+    while(1)
+    {
+	    if (Button_Read()==0){
+			led_state=!led_state;
+			if(led_state==1){
+				GPIOC->ODR |= (1 << 13);
+			}
+				else{
+					GPIOC->ODR &= ~(1 << 13);
+				}
+				delay_ms(100);
+
+				}
+
+    }
+}
+```
+
 
  
 
